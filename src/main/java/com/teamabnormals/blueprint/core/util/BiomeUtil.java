@@ -9,6 +9,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.common.codec.NullableFieldCodec;
 import com.teamabnormals.blueprint.core.Blueprint;
+import com.teamabnormals.blueprint.core.extensions.ClimateRTreeExtension;
 import com.teamabnormals.blueprint.core.registry.BlueprintBiomes;
 import com.teamabnormals.blueprint.core.util.registry.BasicRegistry;
 import net.minecraft.core.Holder;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSourceParameterList;
+import net.minecraft.world.level.levelgen.DensityFunction;
 
 import java.util.HashSet;
 import java.util.List;
@@ -44,6 +46,7 @@ public final class BiomeUtil {
 	private static final Set<ResourceKey<Biome>> CUSTOM_END_MUSIC_BIOMES = new HashSet<>();
 	private static final BasicRegistry<Codec<? extends ModdedBiomeProvider>> MODDED_PROVIDERS = new BasicRegistry<>();
 	public static final Codec<ResourceKey<Biome>> BIOME_KEY_CODEC = ResourceKey.codec(Registries.BIOME);
+	public static final ResourceKey<DensityFunction> SUB_BIOME_NOISE = ResourceKey.create(Registries.DENSITY_FUNCTION, Blueprint.REGISTRY_HELPER.prefix("sub_biome_noise"));
 
 	static {
 		MODDED_PROVIDERS.register(new ResourceLocation(Blueprint.MOD_ID, "original"), BiomeUtil.OriginalModdedBiomeProvider.CODEC);
@@ -158,10 +161,13 @@ public final class BiomeUtil {
 		private static final Codec<MultiNoiseModdedBiomeProvider> CODEC = RecordCodecBuilder.create(instance -> {
 			return instance.group(
 					NullableFieldCodec.nullable("areas", Codec.unboundedMap(BIOME_KEY_CODEC, BIOME_KEY_CODEC), ImmutableMap.of()).forGetter(provider -> provider.areas),
+					NullableFieldCodec.nullable("edge_biomes", Codec.unboundedMap(BIOME_KEY_CODEC, BIOME_KEY_CODEC), ImmutableMap.of()).forGetter(provider -> provider.edgeBiomes),
+					NullableFieldCodec.nullable("interior_biomes", Codec.unboundedMap(BIOME_KEY_CODEC, BIOME_KEY_CODEC), ImmutableMap.of()).forGetter(provider -> provider.interiorBiomes),
 					Codec.either(MultiNoiseBiomeSourceParameterList.CODEC, ExtraCodecs.nonEmptyList(RecordCodecBuilder.<Pair<Climate.ParameterPoint, ResourceKey<Biome>>>create(pairInstance -> pairInstance.group(Climate.ParameterPoint.CODEC.fieldOf("parameters").forGetter(Pair::getFirst), BIOME_KEY_CODEC.fieldOf("biome").forGetter(Pair::getSecond)).apply(pairInstance, Pair::of)).listOf())).fieldOf("biomes").forGetter(provider -> provider.rawBiomes),
 					Codec.BOOL.optionalFieldOf("only_map_from_areas", false).forGetter(provider -> provider.onlyMapFromAreas),
-					RegistryOps.retrieveGetter(Registries.BIOME)
-			).apply(instance, (areas, rawBiomes, onlyMapFromAreas, getter) -> {
+					RegistryOps.retrieveGetter(Registries.BIOME),
+					RegistryOps.retrieveGetter(Registries.DENSITY_FUNCTION)
+			).apply(instance, (areas, edgeBiomes, interiorBiomes, rawBiomes, onlyMapFromAreas, getter, noiseGetter) -> {
 				ImmutableList.Builder<Pair<Climate.ParameterPoint, Holder<Biome>>> builder = ImmutableList.builder();
 				var biomes = rawBiomes.map(
 						preset -> preset.value().parameters().values().stream().map(pair -> Pair.of(pair.getFirst(), pair.getSecond().unwrapKey().orElseThrow())).toList(),
@@ -173,16 +179,21 @@ public final class BiomeUtil {
 					var keyForKey = areas.get(key);
 					builder.add(Pair.of(pointWithKey.getFirst(), keyForKey != null ? getter.getOrThrow(keyForKey) : (onlyMapFromAreas ? originalSourceMarker : getter.get(key).orElse(originalSourceMarker))));
 				}
-				return new MultiNoiseModdedBiomeProvider(areas, rawBiomes, new Climate.ParameterList<>(builder.build()), onlyMapFromAreas);
+				return new MultiNoiseModdedBiomeProvider(areas, edgeBiomes, interiorBiomes, rawBiomes, new Climate.ParameterList<>(builder.build()), noiseGetter.getOrThrow(SUB_BIOME_NOISE), onlyMapFromAreas);
 			});
 		});
 		private final Map<ResourceKey<Biome>, ResourceKey<Biome>> areas;
+		private final Map<ResourceKey<Biome>, ResourceKey<Biome>> edgeBiomes;
+		private final Map<ResourceKey<Biome>, ResourceKey<Biome>> interiorBiomes;
+
 		private final Either<Holder<MultiNoiseBiomeSourceParameterList>, List<Pair<Climate.ParameterPoint, ResourceKey<Biome>>>> rawBiomes;
 		private final Climate.ParameterList<Holder<Biome>> biomes;
 		private final boolean onlyMapFromAreas;
 
-		private MultiNoiseModdedBiomeProvider(Map<ResourceKey<Biome>, ResourceKey<Biome>> areas, Either<Holder<MultiNoiseBiomeSourceParameterList>, List<Pair<Climate.ParameterPoint, ResourceKey<Biome>>>> rawBiomes, Climate.ParameterList<Holder<Biome>> biomes, boolean onlyMapFromAreas) {
+		private MultiNoiseModdedBiomeProvider(Map<ResourceKey<Biome>, ResourceKey<Biome>> areas, Map<ResourceKey<Biome>, ResourceKey<Biome>> edgeBiomes, Map<ResourceKey<Biome>, ResourceKey<Biome>> interiorBiomes, Either<Holder<MultiNoiseBiomeSourceParameterList>, List<Pair<Climate.ParameterPoint, ResourceKey<Biome>>>> rawBiomes, Climate.ParameterList<Holder<Biome>> biomes, Holder<DensityFunction> noise, boolean onlyMapFromAreas) {
 			this.areas = areas;
+			this.edgeBiomes = edgeBiomes;
+			this.interiorBiomes = interiorBiomes;
 			this.rawBiomes = rawBiomes;
 			this.biomes = biomes;
 			this.onlyMapFromAreas = onlyMapFromAreas;
@@ -199,7 +210,13 @@ public final class BiomeUtil {
 
 		@Override
 		public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry) {
-			return this.biomes.findValue(sampler.sample(x, y, z));
+			if (this.edgeBiomes.isEmpty() && this.interiorBiomes.isEmpty()) {
+				return this.biomes.findValue(sampler.sample(x, y, z));
+			} else {
+				@SuppressWarnings("unchecked")
+				ClimateRTreeExtension.SearchResult<Holder<Biome>> nodes = ((ClimateRTreeExtension<Holder<Biome>>) (Object) this.biomes.index).blueprint$deepSearch(sampler.sample(x, y, z), null);
+				return null;
+			}
 		}
 
 		@Override
@@ -209,8 +226,13 @@ public final class BiomeUtil {
 
 		@Override
 		public Set<Holder<Biome>> getAdditionalPossibleBiomes(Registry<Biome> registry) {
-			return this.biomes.values().stream().map(Pair::getSecond).collect(Collectors.toSet());
+			Set<Holder<Biome>> set = this.biomes.values().stream().map(Pair::getSecond).collect(Collectors.toSet());
+			this.edgeBiomes.values().forEach(key -> set.add(registry.getHolderOrThrow(key)));
+			this.interiorBiomes.values().forEach(key -> set.add(registry.getHolderOrThrow(key)));
+			return set;
 		}
+
+		private static Holder<Biome> calculateSubBiome(Holder<Biome> original, DensityFunction noise, Registry<Biome> registry, )
 
 		/**
 		 * The builder class for the {@link BiomeUtil.MultiNoiseModdedBiomeProvider} class.
@@ -219,6 +241,8 @@ public final class BiomeUtil {
 		 */
 		public static final class Builder {
 			private final ImmutableMap.Builder<ResourceKey<Biome>, ResourceKey<Biome>> areas = ImmutableMap.builder();
+			private final ImmutableMap.Builder<ResourceKey<Biome>, ResourceKey<Biome>> edgeBiomes = ImmutableMap.builder();
+			private final ImmutableMap.Builder<ResourceKey<Biome>, ResourceKey<Biome>> interiorBiomes = ImmutableMap.builder();
 			private Either<Holder<MultiNoiseBiomeSourceParameterList>, List<Pair<Climate.ParameterPoint, ResourceKey<Biome>>>> rawBiomes = Either.right(ImmutableList.of());
 			private boolean onlyMapFromAreas = true;
 
@@ -232,6 +256,32 @@ public final class BiomeUtil {
 			 */
 			public Builder area(ResourceKey<Biome> key, ResourceKey<Biome> value) {
 				this.areas.put(key, value);
+				return this;
+			}
+
+			/**
+			 * Tells the provider to generate a biome near the borders of another biome, similar to pre-1.18 worldgen.
+			 * <p>Useful for creating smaller-scale transitions between biomes that normal biome placement cannot support.</p>
+			 *
+			 * @param key   The {@link ResourceKey} of {@link Biome} to have the edge biome generate around.
+			 * @param value The {@link ResourceKey} of {@link Biome} to use as the edge biome.
+			 * @return This builder.
+			 */
+			public Builder edgeBiome(ResourceKey<Biome> key, ResourceKey<Biome> value) {
+				this.edgeBiomes.put(key, value);
+				return this;
+			}
+
+			/**
+			 * Tells the provider to generate a biome inside another biome, usually close to the center.
+			 * <p>Useful for adding smaller-scale sub-biomes that normal biome placement cannot support.</p>
+			 *
+			 * @param key   The {@link ResourceKey} of {@link Biome} to have the interior biome generate inside.
+			 * @param value The {@link ResourceKey} of {@link Biome} to use as the interior biome.
+			 * @return This builder.
+			 */
+			public Builder interiorBiome(ResourceKey<Biome> key, ResourceKey<Biome> value) {
+				this.interiorBiomes.put(key, value);
 				return this;
 			}
 
@@ -277,7 +327,7 @@ public final class BiomeUtil {
 			 * @return A new {@link MultiNoiseModdedBiomeProvider} instance from this builder.
 			 */
 			public MultiNoiseModdedBiomeProvider build() {
-				return new MultiNoiseModdedBiomeProvider(this.areas.build(), this.rawBiomes, null, this.onlyMapFromAreas);
+				return new MultiNoiseModdedBiomeProvider(this.areas.build(), this.edgeBiomes.build(), this.interiorBiomes.build(), this.rawBiomes, null, null, this.onlyMapFromAreas);
 			}
 		}
 	}
