@@ -1,9 +1,0 @@
-{
-  "molding": "json",
-  "remolder": {
-    "type": "replace",
-    "target": "result.item",
-    "value": "minecraft:netherite_block"
-  },
-  "selector": "minecraft:recipes/gold_block"
-}

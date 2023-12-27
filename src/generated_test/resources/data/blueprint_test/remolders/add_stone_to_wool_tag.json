@@ -1,9 +1,0 @@
-{
-  "molding": "json",
-  "remolder": {
-    "type": "add",
-    "target": "values[]",
-    "value": "minecraft:stone"
-  },
-  "selector": "minecraft:tags/blocks/wool"
-}

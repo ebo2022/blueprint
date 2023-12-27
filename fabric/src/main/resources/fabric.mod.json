@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "authors": [
+    "Team Abnormals"
+  ],
+  "contributors": [
+    "SmellyModder",
+    "bageldotjpg",
+    "Jackson"
+  ],
+  "contact": {
+    "homepage": "${homepage}",
+    "issues": "https://github.com/team-abnormals/${archives_base_name}/issues",
+    "sources": "https://github.com/team-abnormals/${archives_base_name}/"
+  },
+  "license": "${license}",
+  "environment": "*",
+  "entrypoints": {
+
+  },
+  "mixins": [
+    "${mod_id}.mixins.json",
+    "${mod_id}-common.mixins.json"
+  ],
+  "depends": {
+    "fabric": "*",
+    "minecraft": "~${minecraft_version}"
+  },
+  "custom": {
+    "modmenu": {
+      "badges": [ "library" ]
+    }
+  }
+}

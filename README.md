@@ -1,3 +1,16 @@
+## IMPORTANT!
+This is a version of Blueprint developed on 1.20.4 to work with the Architectury toolchain, meaning the existing content is/will be converted into common code shared between NeoForge and Fabric projects. This fork DOES NOT reflect the development of the official mod! Team Abnormals has no plans to port their mods to Fabric as of current. I use this project more-so as a workspace to test out multiplatform code I could end up using in the future.
+
+*This fork also includes (or will include) some of my own additions:*
+- A forge-like but modular biome modifier system; "selectors" and "modifiers" can be added separately in the same JSON file with a high degree of customizability. Some "selectors" use information unique to this system, such as reading what features or climate values were present before modification
+- A direct port of NeoForge's config API to work on both platforms
+- A port of NeoForge's codec-based resource condition API to work with Fabric's implementation
+  - Also make the Blueprint config condition stuff work with this
+- A class to manage events in a Forge-like manner
+- Support for datagen on both platforms from the common project, done with custom data providers to avoid reflection fuckery on Forge
+- Some sort of system to automatically add ItemLikes to creative tabs without registering to events, idk quite what that is yet
+
+
 ![Banner](https://i.imgur.com/2feJFS9.png)
 <p align="center">
     <a href="https://www.teamabnormals.com/" align="center"><img alt="Team Abnormals Website" src="http://bit.ly/abnormalswebbadge"></a>

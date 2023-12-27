@@ -1,8 +1,0 @@
-{
-  "repaletter": {
-    "type": "blueprint:simple",
-    "replaces_block": "minecraft:cobblestone",
-    "replaces_with": "minecraft:mossy_cobblestone"
-  },
-  "structures": "minecraft:pillager_outpost"
-}

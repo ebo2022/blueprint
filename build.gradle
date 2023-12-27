@@ -1,161 +1,58 @@
-buildscript {
-    repositories {
-        maven { url = "https://files.minecraftforge.net/maven" }
-        maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
+plugins {
+    id "architectury-plugin" version "3.4-SNAPSHOT"
+    id "dev.architectury.loom" version "1.4-SNAPSHOT" apply false
+}
+
+architectury {
+    minecraft = rootProject.minecraft_version
+}
+
+subprojects {
+    apply plugin: "dev.architectury.loom"
+
+    loom {
+        silentMojangMappingsLicense()
     }
+
     dependencies {
-        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "5.1.+", changing: true
-        classpath group: "org.spongepowered", name: "mixingradle", version: "0.7-SNAPSHOT"
+        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+        // The following line declares the mojmap mappings, you may use other mappings as well
+        mappings loom.officialMojangMappings()
+        // The following line declares the yarn mappings you may select this one as well.
+        // mappings "net.fabricmc:yarn:1.20.1+build.10:v2"
     }
-}
 
-apply plugin: "net.minecraftforge.gradle"
-apply plugin: "eclipse"
-apply plugin: "maven-publish"
-apply plugin: "org.spongepowered.mixin"
-
-mixin {
-    add sourceSets.main, "${project.modId}.refmap.json"
-}
-
-version = "${project.minecraft}-${project.modVersion}"
-group = "com.teamabnormals"
-archivesBaseName = project.modId
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-
-minecraft {
-    mappings channel: "official", version: "${project.minecraft}"
-    accessTransformer = file("src/main/resources/META-INF/accesstransformer.cfg")
-    runs {
-        client {
-            workingDirectory project.file("run")
-            property "forge.logging.markers", "REGISTRIES"
-            property "forge.logging.console.level", "debug"
-            property "blueprint.indev", "true"
-            arg "-mixin.config=" + project.modId + ".mixins.json"
-            arg "-mixin.config=" + "blueprint_test.mixins.json"
-            mods {
-                blueprint {
-                    source sourceSets.main
-                }
-                blueprint_test {
-                    source sourceSets.test
-                }
-            }
-        }
-        server {
-            workingDirectory project.file("run")
-            property "forge.logging.markers", "REGISTRIES"
-            property "forge.logging.console.level", "debug"
-            property "blueprint.indev", "true"
-            arg "-mixin.config=" + project.modId + ".mixins.json"
-            arg "-mixin.config=" + "blueprint_test.mixins.json"
-            mods {
-                blueprint {
-                    source sourceSets.main
-                }
-                blueprint_test {
-                    source sourceSets.test
-                }
-            }
-        }
-        def blueprintDataArgs = [
-                "--mod", project.modId,
-                "--all",
-                "--output", file("src/generated/resources/"),
-                "--existing", file("src/main/resources")
-        ]
-        data {
-            workingDirectory project.file("run")
-            property "forge.logging.markers", "REGISTRIES"
-            property "forge.logging.console.level", "debug"
-            property "mixin.env.remapRefMap", "true"
-            property "mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg"
-            property "blueprint.indev", "true"
-            args blueprintDataArgs
-            mods {
-                blueprint {
-                    source sourceSets.main
-                }
-            }
-        }
-        testData {
-            parent runs.data
-
-            mods {
-                blueprint_test {
-                    source sourceSets.test
-                }
-            }
-
-            afterEvaluate {
-                //Weird trick, but forge test mods do it too
-                args.removeAll {
-                    blueprintDataArgs.contains(it instanceof File ? (it as File).absolutePath : it.toString())
-                }
-                args "--mod", "blueprint_test", "--all", "--output", file("src/generated_test/resources/"), "--existing", file("src/test/resources")
-            }
-        }
-    }
-}
-
-sourceSets.main.resources {
-    srcDir "src/generated/resources"
-}
-
-sourceSets.test.resources {
-    srcDir "src/generated_test/resources"
-}
-
-dependencies {
-    minecraft "net.minecraftforge:forge:${project.minecraft}-${project.forge}"
-
-    annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
-}
-
-jar {
-    manifest {
-        attributes([
-                "Specification-Title"     : project.modName,
-                "Specification-Vendor"    : "Team Abnormals",
-                "Specification-Version"   : "1",
-                "Implementation-Title"    : project.modName,
-                "Implementation-Version"  : project.modVersion,
-                "Implementation-Vendor"   : "Team Abnormals",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "MixinConfigs"            : project.modId + ".mixins.json"
-        ])
-    }
-    finalizedBy "reobfJar"
-}
-
-task sourcesJar(type: Jar) {
-    duplicatesStrategy(DuplicatesStrategy.FAIL)
-    archiveClassifier.set("sources")
-    from sourceSets.main.allJava
-}
-
-artifacts {
-    archives sourcesJar
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            artifact jar
-            artifact sourcesJar
-        }
-    }
     repositories {
-        if (project.hasProperty("jacksonMavenUser") && project.hasProperty("jacksonMavenPass")) {
-            maven {
-                url "https://maven.jaackson.me"
-                credentials {
-                    username = project.properties.jacksonMavenUser
-                    password = project.properties.jacksonMavenPass
-                }
-            }
-        }
+        maven { url "https://maven.neoforged.net/releases/" }
+    }
+}
+
+allprojects {
+    apply plugin: "java"
+    apply plugin: "architectury-plugin"
+    apply plugin: "maven-publish"
+
+    base {
+        archivesName = rootProject.archives_base_name
+    }
+
+    version = rootProject.mod_version
+    group = rootProject.maven_group
+
+    repositories {
+        // Add repositories to retrieve artifacts from in here.
+        // You should only use this when depending on other mods because
+        // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+        // See https://docs.gradle.org/current/userguide/declaring_repositories.html
+        // for more information about repositories.
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+        options.release = 17
+    }
+
+    java {
+        withSourcesJar()
     }
 }
