@@ -13,6 +13,7 @@ import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.FireBlock;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.fml.util.ObfuscationReflectionHelper;
+import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.lang.reflect.InvocationTargetException;
@@ -30,7 +32,6 @@ import java.util.List;
 
 @ApiStatus.Internal
 public class DataUtilImpl {
-
     private static final Method ADD_MIX_METHOD = ObfuscationReflectionHelper.findMethod(PotionBrewing.class, "m_43513_", Potion.class, Item.class, Potion.class);
 
     public static void registerFlammable(Block block, int encouragement, int flammability) {
@@ -79,5 +80,9 @@ public class DataUtilImpl {
         if (name != null) {
             GiveGiftToHeroAccessor.blueprint$getGifts().put(profession, new ResourceLocation(name.getNamespace(), "gameplay/hero_of_the_village/" + name.getPath() + "_gift"));
         }
+    }
+
+    public static Ingredient compoundIngredient(Ingredient... ingredients) {
+        return CompoundIngredient.of(ingredients);
     }
 }

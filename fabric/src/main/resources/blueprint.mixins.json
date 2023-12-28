@@ -6,6 +6,7 @@
   "client": [
   ],
   "mixins": [
+    "IngredientAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

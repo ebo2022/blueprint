@@ -9,3 +9,4 @@ mutable field net/minecraft/world/level/block/Block descriptionId Ljava/lang/Str
 accessible field net/minecraft/world/item/Item descriptionId Ljava/lang/String;
 mutable field net/minecraft/world/item/Item descriptionId Ljava/lang/String;
 accessible field net/minecraft/world/level/block/DispenserBlock DISPENSER_REGISTRY Ljava/util/Map;
+accessible class net/minecraft/world/item/crafting/Ingredient$Value

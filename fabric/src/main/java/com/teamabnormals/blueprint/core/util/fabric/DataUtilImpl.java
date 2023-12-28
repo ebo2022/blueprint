@@ -1,5 +1,6 @@
 package com.teamabnormals.blueprint.core.util.fabric;
 
+import com.teamabnormals.blueprint.core.mixin.fabric.IngredientAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
@@ -20,6 +21,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -52,6 +54,20 @@ public class DataUtilImpl {
         ResourceLocation name = BuiltInRegistries.VILLAGER_PROFESSION.getKey(profession);
         if (name != null) {
             VillagerInteractionRegistries.registerGiftLootTable(profession, new ResourceLocation(name.getNamespace(), "gameplay/hero_of_the_village/" + name.getPath() + "_gift"));
+        }
+    }
+
+    public static Ingredient compoundIngredient(Ingredient... ingredients) {
+        if (ingredients.length == 0) {
+            return Ingredient.EMPTY;
+        } else if (ingredients.length == 1) {
+            return ingredients[0];
+        } else {
+            List<Ingredient.Value> values = new ArrayList<>();
+            for (Ingredient ingredient : ingredients) {
+                values.addAll(Arrays.asList(((IngredientAccessor) (Object) ingredient).blueprint$getValues()));
+            }
+            return IngredientAccessor.blueprint$fromValues(values.stream());
         }
     }
 }

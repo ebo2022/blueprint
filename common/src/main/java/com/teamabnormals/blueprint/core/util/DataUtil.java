@@ -25,6 +25,7 @@ import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DispenserBlock;
@@ -424,6 +425,17 @@ public final class DataUtil {
 		//	throw new IllegalStateException("Duplicate config predicate serializer: " + key);
 		//ConfigValueCondition.Serializer.CONFIG_PREDICATE_SERIALIZERS.put(key, serializer);
 	//}
+
+	/**
+	 * Creates an ingredient that has all the items of the provided ingredients.
+	 *
+	 * @param ingredients The ingredients to use to create the compound ingredient
+	 * @return An ingredient that has all the items of the provided ingredients.
+	 */
+	@ExpectPlatform
+	public static Ingredient compoundIngredient(Ingredient... ingredients) {
+		throw new AssertionError();
+	}
 
 	/**
 	 * Returns the list of registered {@link AlternativeDispenseBehavior}s, sorted by their comparators. Intended for

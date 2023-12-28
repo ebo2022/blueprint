@@ -12,14 +12,35 @@ import com.teamabnormals.blueprint.core.util.IParallelDispatcher;
 public interface CommonLifecycleEvents {
 
     /**
+     * Fired at the same time as {@link #COMMON_SETUP} in server environments only.
+     * <p>On Fabric, this fires after all mod initializers have loaded.</p>
+     * <p>On Forge, this is equivalent to <code>FMLClientSetupEvent</code>.</p>
+     */
+    SimpleEvent<ParallelDispatchEvent> CLIENT_SETUP = EventUtil.createVoid(ParallelDispatchEvent.class);
+
+    /**
+     * Fired after registries have been initialized.
+     * <p>On Fabric, this fires after all mod initializers have loaded.</p>
+     * <p>On Forge, this is equivalent to <code>FMLCommonSetupEvent</code>.</p>
+     */
+    SimpleEvent<ParallelDispatchEvent> COMMON_SETUP = EventUtil.createVoid(ParallelDispatchEvent.class);
+
+    /**
+     * Fired at the same time as {@link #COMMON_SETUP} in server environments only.
+     * <p>On Fabric, this fires after all mod initializers have loaded.</p>
+     * <p>On Forge, this is equivalent to <code>FMLDedicatedServerSetupEvent</code>.</p>
+     */
+    SimpleEvent<ParallelDispatchEvent> DEDICATED_SERVER_SETUP = EventUtil.createVoid(ParallelDispatchEvent.class);
+
+    /**
      * Fired when modloading is fully complete.
      * <p>On Fabric, this fires after all mod initializers have loaded.</p>
-     * <p>On Forge, this is analogous to <code>FMLLoadCompleteEvent</code>.</p>
+     * <p>On Forge, this is equivalent to <code>FMLLoadCompleteEvent</code>.</p>
      */
-    SimpleEvent<LoadComplete> LOAD_COMPLETE = EventUtil.createVoid(LoadComplete.class);
+    SimpleEvent<ParallelDispatchEvent> LOAD_COMPLETE = EventUtil.createVoid(ParallelDispatchEvent.class);
 
     @FunctionalInterface
-    interface LoadComplete {
-        void onLoadComplete(IParallelDispatcher dispatcher);
+    interface ParallelDispatchEvent {
+        void event(IParallelDispatcher dispatcher);
     }
 }
