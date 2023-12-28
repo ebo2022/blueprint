@@ -20,6 +20,15 @@
   "license": "${license}",
   "environment": "*",
   "entrypoints": {
+    "main": [
+      "com.teamabnormals.blueprint.fabric.BlueprintFabric"
+    ],
+    "client": [
+      "com.teamabnormals.blueprint.fabric.BlueprintFabricClient"
+    ],
+    "server": [
+      "com.teamabnormals.blueprint.fabric.BlueprintFabric"
+    ]
   },
   "mixins": [
     "${mod_id}.mixins.json",

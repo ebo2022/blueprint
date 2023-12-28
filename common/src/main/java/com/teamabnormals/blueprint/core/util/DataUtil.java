@@ -9,6 +9,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.Util;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.dispenser.BlockSource;
@@ -27,9 +28,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.entity.DecoratedPotPatterns;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
@@ -298,8 +301,8 @@ public final class DataUtil {
 	 * See {@link CustomNoteBlockInstrument} for details.
 	 *
 	 * <p>Since Blueprint adds instruments to an internal list at the end of mod loading, mods should call
-	 * this method as early as possible, ideally in an
-	 * {@link net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent FMLCommonSetupEvent} listener.</p>
+	 * this method as early as possible, ideally in a
+	 * {@link com.teamabnormals.blueprint.core.events.lifecycle.ModLifecycleEvents#COMMON_SETUP common setup} listener.</p>
 	 *
 	 * @param instrument The {@link CustomNoteBlockInstrument} to get registered.
 	 * @author abigailfails
@@ -779,7 +782,8 @@ public final class DataUtil {
 	public static class CustomNoteBlockInstrument implements Comparable<CustomNoteBlockInstrument> {
 		protected final String modId;
 		protected final Comparator<String> modIdComparator;
-		protected final Predicate<BlockSource> condition;
+		protected final BlockUtil.BlockPredicate condition;
+		private final Type type;
 		private final SoundEvent sound;
 
 		/**
@@ -787,19 +791,19 @@ public final class DataUtil {
 		 * should get played instead of vanilla's when a note block is triggered.
 		 *
 		 * @param modId     The ID of the mod registering the condition.
-		 * @param condition A {@link Predicate} that takes in a {@link BlockSource} instance that represents the
-		 *                  position under the note block, returning true if {@code sound} should be played.
+		 * @param condition A {@link BlockUtil.BlockPredicate} that represents the
+		 *                  position above or under the note block, returning true if {@code sound} should be played.
 		 * @param sound     The {@link SoundEvent} that will be played if {@code condition} is met.
 		 */
-		public CustomNoteBlockInstrument(String modId, Predicate<BlockSource> condition, SoundEvent sound) {
-			this(modId, condition, sound, (id1, id2) -> 0);
+		public CustomNoteBlockInstrument(String modId, BlockUtil.BlockPredicate condition, Type type, SoundEvent sound) {
+			this(modId, type, condition, sound, (id1, id2) -> 0);
 		}
 
 		/**
 		 * Initialises a new {@link CustomNoteBlockInstrument} where {@code condition} decides whether {@code sound}
 		 * should get played instead of vanilla's when a note block is triggered.
 		 *
-		 * <p>If multiple mods add new instruments and the {@link BlockSource} predicates overlap such that the order
+		 * <p>If multiple mods add new instruments and the {@link BlockUtil.BlockPredicate}s overlap such that the order
 		 * that they are registered in matters, {@code modIdComparator} (where the first parameter is {@code modId} and
 		 * the second parameter is the mod ID of another {@link CustomNoteBlockInstrument} instance) can be used to
 		 * ensure this order regardless of which mod is loaded first.</p>
@@ -812,7 +816,7 @@ public final class DataUtil {
 		 * {@code (id1, id2) -> id2.equals("a") ? -1 : 0}.</p>
 		 *
 		 * @param modId           The ID of the mod registering the condition.
-		 * @param condition       A {@link Predicate} that takes in a {@link BlockSource} instance that represents the
+		 * @param condition       A {@link BlockUtil.BlockPredicate} that represents the
 		 *                        position under the note block, returning true if {@code sound} should be played.
 		 * @param sound           The {@link SoundEvent} that will be played if {@code condition} is met.
 		 * @param modIdComparator A {@link Comparator} that compares two strings. The first is {@code modId}, and the
@@ -820,8 +824,9 @@ public final class DataUtil {
 		 *                        It should return 1 if {@code condition} should be tested after the other instrument's,
 		 *                        -1 if it should go before, and 0 in any other case.
 		 */
-		public CustomNoteBlockInstrument(String modId, Predicate<BlockSource> condition, SoundEvent sound, Comparator<String> modIdComparator) {
+		public CustomNoteBlockInstrument(String modId, Type type, BlockUtil.BlockPredicate condition, SoundEvent sound, Comparator<String> modIdComparator) {
 			this.modId = modId;
+			this.type = type;
 			this.condition = condition;
 			this.sound = sound;
 			this.modIdComparator = modIdComparator;
@@ -832,12 +837,36 @@ public final class DataUtil {
 			return this.modIdComparator.compare(this.modId, instrument.modId);
 		}
 
-		public boolean test(BlockSource source) {
-			return this.condition.test(source);
+		public boolean test(Level level, BlockPos pos) {
+			return this.condition.test(level, pos);
+		}
+
+		public boolean worksAboveNoteBlock() {
+			return this.type == Type.MOB_HEAD;
+		}
+
+		public boolean isTunable() {
+			return this.type == Type.BASE_BLOCK;
 		}
 
 		public SoundEvent getSound() {
 			return this.sound;
+		}
+
+		/**
+		 * Decides if the instrument should work above or below the note block, and if the sound being played can be tuned..
+		 */
+		public enum Type {
+
+			/**
+			 * Indicates a normal instrument which is placed below the note block and can be tuned.
+			 */
+			BASE_BLOCK,
+
+			/**
+			 * Indicates a mob head instrument which is placed above the note block and cannot be tuned.
+			 */
+			MOB_HEAD,
 		}
 	}
 }

@@ -9,7 +9,7 @@ import com.teamabnormals.blueprint.core.util.IParallelDispatcher;
  *
  * @author ebo2022
  */
-public interface CommonLifecycleEvents {
+public interface ModLifecycleEvents {
 
     /**
      * Fired at the same time as {@link #COMMON_SETUP} in server environments only.

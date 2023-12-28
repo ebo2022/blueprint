@@ -1,6 +1,6 @@
 package com.teamabnormals.blueprint.fabric;
 
-import com.teamabnormals.blueprint.core.events.lifecycle.CommonLifecycleEvents;
+import com.teamabnormals.blueprint.core.events.lifecycle.ModLifecycleEvents;
 import com.teamabnormals.blueprint.core.util.IParallelDispatcher;
 import net.fabricmc.api.ClientModInitializer;
 
@@ -9,8 +9,8 @@ public class BlueprintFabricClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        CommonLifecycleEvents.COMMON_SETUP.getInvoker().event(IParallelDispatcher.EMPTY);
-        CommonLifecycleEvents.CLIENT_SETUP.getInvoker().event(IParallelDispatcher.EMPTY);
-        CommonLifecycleEvents.LOAD_COMPLETE.getInvoker().event(IParallelDispatcher.EMPTY);
+        ModLifecycleEvents.COMMON_SETUP.getInvoker().event(IParallelDispatcher.EMPTY);
+        ModLifecycleEvents.CLIENT_SETUP.getInvoker().event(IParallelDispatcher.EMPTY);
+        ModLifecycleEvents.LOAD_COMPLETE.getInvoker().event(IParallelDispatcher.EMPTY);
     }
 }

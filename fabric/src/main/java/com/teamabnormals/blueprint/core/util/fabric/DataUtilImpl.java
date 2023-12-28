@@ -23,6 +23,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @ApiStatus.Internal
@@ -65,7 +66,7 @@ public class DataUtilImpl {
         } else {
             List<Ingredient.Value> values = new ArrayList<>();
             for (Ingredient ingredient : ingredients) {
-                values.addAll(Arrays.asList(((IngredientAccessor) (Object) ingredient).blueprint$getValues()));
+                Collections.addAll(values, ((IngredientAccessor) (Object) ingredient).blueprint$getValues());
             }
             return IngredientAccessor.blueprint$fromValues(values.stream());
         }

@@ -1,6 +1,6 @@
 package com.teamabnormals.blueprint.fabric;
 
-import com.teamabnormals.blueprint.core.events.lifecycle.CommonLifecycleEvents;
+import com.teamabnormals.blueprint.core.events.lifecycle.ModLifecycleEvents;
 import com.teamabnormals.blueprint.core.util.IParallelDispatcher;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.api.ModInitializer;
@@ -14,8 +14,8 @@ public class BlueprintFabric implements ModInitializer, DedicatedServerModInitia
     // Server initializers are ran after the regular ones meaning registries should be complete
     @Override
     public void onInitializeServer() {
-        CommonLifecycleEvents.COMMON_SETUP.getInvoker().event(IParallelDispatcher.EMPTY);
-        CommonLifecycleEvents.DEDICATED_SERVER_SETUP.getInvoker().event(IParallelDispatcher.EMPTY);
-        CommonLifecycleEvents.LOAD_COMPLETE.getInvoker().event(IParallelDispatcher.EMPTY);
+        ModLifecycleEvents.COMMON_SETUP.getInvoker().event(IParallelDispatcher.EMPTY);
+        ModLifecycleEvents.DEDICATED_SERVER_SETUP.getInvoker().event(IParallelDispatcher.EMPTY);
+        ModLifecycleEvents.LOAD_COMPLETE.getInvoker().event(IParallelDispatcher.EMPTY);
     }
 }

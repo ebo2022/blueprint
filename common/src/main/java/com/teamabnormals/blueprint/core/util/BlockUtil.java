@@ -239,4 +239,17 @@ public final class BlockUtil {
 			return this.modifier.apply(bb);
 		}
 	}
+
+	/**
+	 * A predicate that takes in a level, block position, and block state to describe a position in the world.
+	 */
+	@FunctionalInterface
+	public interface BlockPredicate {
+
+		boolean test(Level level, BlockPos pos, BlockState state);
+
+		default boolean test(Level level, BlockPos pos) {
+			return this.test(level, pos, level.getBlockState(pos));
+		}
+	}
 }
