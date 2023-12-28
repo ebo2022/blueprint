@@ -6,10 +6,10 @@ This is a version of Blueprint developed on 1.20.4 to work with the Architectury
 - A direct port of NeoForge's config API to work on both platforms
 - A port of NeoForge's codec-based resource condition API to work with Fabric's implementation
   - Also make the Blueprint config condition stuff work with this
-- A class to manage events in a Forge-like manner
+- Use SimpleEvent to create common versions of events Blueprint or other mods may use
 - Support for datagen on both platforms from the common project, done with custom data providers to avoid reflection fuckery on Forge
-- Some sort of system to automatically add ItemLikes to creative tabs without registering to events, idk quite what that is yet
 
+Anyway, continue on...
 
 ![Banner](https://i.imgur.com/2feJFS9.png)
 <p align="center">

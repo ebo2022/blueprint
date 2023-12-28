@@ -1,1 +1,11 @@
 accessWidener   v2  named
+accessible field net/minecraft/world/level/levelgen/structure/pools/StructureTemplatePool templates Lit/unimi/dsi/fastutil/objects/ObjectArrayList;
+accessible field net/minecraft/world/entity/animal/Parrot MOB_SOUND_MAP Ljava/util/Map;
+accessible field net/minecraft/world/entity/animal/Parrot TAME_FOOD Ljava/util/Set;
+accessible field net/minecraft/world/level/block/entity/DecoratedPotPatterns ITEM_TO_POT_TEXTURE Ljava/util/Map;
+mutable field net/minecraft/world/level/block/entity/DecoratedPotPatterns ITEM_TO_POT_TEXTURE Ljava/util/Map;
+accessible field net/minecraft/world/level/block/Block descriptionId Ljava/lang/String;
+mutable field net/minecraft/world/level/block/Block descriptionId Ljava/lang/String;
+accessible field net/minecraft/world/item/Item descriptionId Ljava/lang/String;
+mutable field net/minecraft/world/item/Item descriptionId Ljava/lang/String;
+accessible field net/minecraft/world/level/block/DispenserBlock DISPENSER_REGISTRY Ljava/util/Map;
