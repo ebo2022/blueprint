@@ -1,7 +1,9 @@
 package com.teamabnormals.blueprint.core.util;
 
 import com.google.common.collect.Maps;
+import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.JsonOps;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHolder;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.fabricmc.api.EnvType;
@@ -16,9 +18,11 @@ import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Parrot;
@@ -464,9 +468,9 @@ public final class DataUtil {
 		return instruments;
 	}
 
-	//public static RegistryOps<JsonElement> createRegistryOps(ReloadableServerResources serverResources) throws IllegalAccessException {
-		//return RegistryOps.create(JsonOps.INSTANCE, (RegistryAccess) REGISTRY_ACCESS.get(TAG_MANAGER.get(serverResources)));
-	//}
+	public static RegistryOps<JsonElement> createRegistryOps(ReloadableServerResources serverResources) {
+		return RegistryOps.create(JsonOps.INSTANCE, serverResources.tagManager.registryAccess);
+	}
 
 	/**
 	 * Memoizes a {@link Function} instance.

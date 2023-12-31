@@ -6,7 +6,8 @@
   "client": [
   ],
   "mixins": [
-    "GiveGiftToHeroAccessor"
+    "GiveGiftToHeroAccessor",
+    "PotionBrewingAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

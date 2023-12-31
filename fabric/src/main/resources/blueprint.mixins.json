@@ -4,9 +4,15 @@
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "client": [
+    "client.ClientHandshakePacketListenerImplAccessor",
+    "client.ClientPacketListenerAccessor",
+    "client.IntegratedServerMixin"
   ],
   "mixins": [
-    "IngredientAccessor"
+    "DedicatedServerMixin",
+    "IngredientAccessor",
+    "ServerGamePacketListenerImplAccessor",
+    "ServerLoginPacketListenerImplAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

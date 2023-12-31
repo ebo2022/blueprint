@@ -13,6 +13,7 @@ import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 public class BlueprintForge {
 
     public BlueprintForge() {
+        Blueprint.init();
         ForgeUtil.addModBusConsumer(Blueprint.MOD_ID, bus -> {
             bus.<FMLClientSetupEvent>addListener(event -> ModLifecycleEvents.CLIENT_SETUP.getInvoker().event(ForgeUtil.createParallelDispatcher(event)));
             bus.<FMLCommonSetupEvent>addListener(event -> ModLifecycleEvents.COMMON_SETUP.getInvoker().event(ForgeUtil.createParallelDispatcher(event)));

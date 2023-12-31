@@ -1,8 +1,10 @@
 package com.teamabnormals.blueprint.core.other;
 
 import com.teamabnormals.blueprint.core.util.DataUtil.CustomNoteBlockInstrument;
+import com.teamabnormals.blueprint.core.util.NetworkUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
@@ -24,10 +26,7 @@ public final class BlueprintCommonEvents {
 						float pitch;
 						if (instrument.isTunable()) {
 							pitch = (float) Math.pow(2.0D, (note - 12) / 12.0D);
-							// TODO: replace this with NetworkUtil.spawnParticle when that's implemented
-							//level.addParticle(
-									//ParticleTypes.NOTE, (double)blockPos.getX() + 0.5, (double)blockPos.getY() + 1.2, (double)blockPos.getZ() + 0.5, (double)k / 24.0, 0.0, 0.0
-							//);
+							NetworkUtil.spawnParticle(NOTE_KEY, (ServerLevel) level, pos.getX() + 0.5D, pos.getY() + 1.2D, pos.getZ() + 0.5D, note / 24.0D, 0.0D, 0.0D);
 						} else {
 							pitch = 1.0F;
 						}
