@@ -29,3 +29,4 @@ accessible field net/minecraft/world/entity/vehicle/Boat lastYd D
 accessible field net/minecraft/world/entity/vehicle/Boat status Lnet/minecraft/world/entity/vehicle/Boat$Status;
 accessible field net/minecraft/world/entity/item/FallingBlockEntity blockState Lnet/minecraft/world/level/block/state/BlockState;
 accessible field net/minecraft/world/entity/item/FallingBlockEntity cancelDrop Z
+transitive-accessible class net/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier

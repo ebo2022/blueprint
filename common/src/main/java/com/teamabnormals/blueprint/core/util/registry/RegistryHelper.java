@@ -1,6 +1,5 @@
 package com.teamabnormals.blueprint.core.util.registry;
 
-import com.google.common.collect.Maps;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -11,12 +10,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;

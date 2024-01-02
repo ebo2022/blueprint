@@ -1,9 +1,5 @@
 package com.teamabnormals.blueprint.core.util.registry;
 
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Supplier;
