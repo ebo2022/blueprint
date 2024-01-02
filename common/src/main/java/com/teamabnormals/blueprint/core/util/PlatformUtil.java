@@ -24,18 +24,6 @@ public class PlatformUtil {
     }
 
     /**
-     * Runs the given side-specific code if the game is running on it.
-     *
-     * @param side  The side to run the code for.
-     * @param toRun A {@link Runnable} for the work to run.
-     */
-    public static void unsafeRunWhenOn(Side side, Supplier<Runnable> toRun) {
-        if (side == getSide()) {
-            toRun.get().run();
-        }
-    }
-
-    /**
      * @return An optional of the currently running Minecraft server, or {@link Optional#empty()} if none is present.
      */
     @ExpectPlatform

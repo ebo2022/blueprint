@@ -4,7 +4,7 @@ import net.minecraft.world.item.Item;
 
 /**
  * An {@link Item} extension that stores a specified burn time for the item.
- * <p>Blueprint handles registering the burn time on each platform automatically.</p>
+ * <p>Blueprint automatically handles registering the burn time for the item.</p>
  */
 public class FuelItem extends Item {
 	private final int burnTime;

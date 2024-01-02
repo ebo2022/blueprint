@@ -2,11 +2,13 @@ package com.teamabnormals.blueprint.core;
 
 import com.mojang.logging.LogUtils;
 import com.teamabnormals.blueprint.client.renderer.BlueprintBoatRenderer;
+import com.teamabnormals.blueprint.client.renderer.block.BlueprintChestBlockEntityRenderer;
 import com.teamabnormals.blueprint.core.events.client.EntityRendererEvents;
 import com.teamabnormals.blueprint.core.events.lifecycle.ModLifecycleEvents;
 import com.teamabnormals.blueprint.core.events.lifecycle.ServerLifecycleEvents;
 import com.teamabnormals.blueprint.core.other.BlueprintCommonEvents;
 import com.teamabnormals.blueprint.core.other.tags.BlueprintItemTags;
+import com.teamabnormals.blueprint.core.registry.BlueprintBlockEntityTypes;
 import com.teamabnormals.blueprint.core.registry.BlueprintBoatTypes;
 import com.teamabnormals.blueprint.core.registry.BlueprintEntityTypes;
 import com.teamabnormals.blueprint.core.util.DataUtil;
@@ -16,6 +18,8 @@ import com.teamabnormals.blueprint.core.util.network.BlueprintNetworkChannel;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
+import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.client.renderer.entity.FallingBlockRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.animal.Cat;
@@ -46,10 +50,10 @@ public class Blueprint {
     public static void init() {
         ModLifecycleEvents.LOAD_COMPLETE.registerListener(Blueprint::postLoadingSetup);
         ServerLifecycleEvents.ABOUT_TO_START.registerListener(DataUtil::onServerAboutToStart);
-        PlatformUtil.unsafeRunWhenOn(PlatformUtil.Side.CLIENT, () -> () -> {
+        if (PlatformUtil.getSide().isClient()) {
             EntityRendererEvents.REGISTER_LAYER_DEFINITIONS.registerListener(Blueprint::registerLayerDefinitions);
             EntityRendererEvents.REGISTER_RENDERERS.registerListener(Blueprint::rendererSetup);
-        });
+        }
     }
 
     @Environment(EnvType.CLIENT)
@@ -62,6 +66,11 @@ public class Blueprint {
         context.registerEntityRenderer(BlueprintEntityTypes.BOAT.get(), ctx -> new BlueprintBoatRenderer(ctx, false));
         context.registerEntityRenderer(BlueprintEntityTypes.CHEST_BOAT.get(), ctx -> new BlueprintBoatRenderer(ctx, true));
         context.registerEntityRenderer(BlueprintEntityTypes.FALLING_BLOCK.get(), FallingBlockRenderer::new);
+
+        context.registerBlockEntityRenderer(BlueprintBlockEntityTypes.CHEST.get(), BlueprintChestBlockEntityRenderer::new);
+        context.registerBlockEntityRenderer(BlueprintBlockEntityTypes.TRAPPED_CHEST.get(), BlueprintChestBlockEntityRenderer::new);
+        context.registerBlockEntityRenderer(BlueprintBlockEntityTypes.SIGN.get(), SignRenderer::new);
+        context.registerBlockEntityRenderer(BlueprintBlockEntityTypes.HANGING_SIGN.get(), HangingSignRenderer::new);
     }
 
     private static void postLoadingSetup(IParallelDispatcher dispatcher) {

@@ -6,8 +6,10 @@
   "client": [
   ],
   "mixins": [
+    "BEWLRBlockItemMixin",
     "FuelItemMixin",
     "GiveGiftToHeroAccessor",
+    "LogBlockMixin",
     "PotionBrewingAccessor"
   ],
   "injectors": {
