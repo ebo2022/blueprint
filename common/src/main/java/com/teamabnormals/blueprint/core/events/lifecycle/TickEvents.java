@@ -37,7 +37,7 @@ public interface TickEvents {
          *
          * @param phase The current phase of the tick.
          */
-        void tick(Phase phase);
+        void event(Phase phase);
     }
 
     /**

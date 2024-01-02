@@ -10,41 +10,81 @@ import net.minecraft.server.MinecraftServer;
  * @author ebo2022
  */
 public interface ServerLifecycleEvents {
+    SimpleEvent<AboutToStart> ABOUT_TO_START = EventUtil.createVoid(AboutToStart.class);
+    SimpleEvent<Starting> STARTING = EventUtil.createVoid(Starting.class);
+    SimpleEvent<Started> STARTED = EventUtil.createVoid(Started.class);
+    SimpleEvent<Stopping> STOPPING = EventUtil.createVoid(Stopping.class);
+    SimpleEvent<Stopped> STOPPED = EventUtil.createVoid(Stopped.class);
 
     /**
-     * Fired when the server is about to start.
-     */
-    SimpleEvent<ServerEvent> ABOUT_TO_START = EventUtil.createVoid(ServerEvent.class);
-
-    /**
-     * Fired when the server is currently starting, after loading the level and info.
-     */
-    SimpleEvent<ServerEvent> STARTING = EventUtil.createVoid(ServerEvent.class);
-
-    /**
-     * Fired after the server has fully started.
-     */
-    SimpleEvent<ServerEvent> STARTED = EventUtil.createVoid(ServerEvent.class);
-
-    /**
-     * Fired when the server starts to stop.
-     */
-    SimpleEvent<ServerEvent> STOPPING = EventUtil.createVoid(ServerEvent.class);
-
-    /**
-     * Fired when the server has fully stopped.
-     */
-    SimpleEvent<ServerEvent> STOPPED = EventUtil.createVoid(ServerEvent.class);
-
-    /**
-     * The functional interface for representing listeners of server-related events.
+     * The functional interface for representing listeners of the {@link #ABOUT_TO_START} event.
      *
      * @author ebo2022
      */
     @FunctionalInterface
-    interface ServerEvent {
+    interface AboutToStart {
         /**
-         * Called when the event listener is fired during the server lifecycle.
+         * Called just the server starts.
+         *
+         * @param server The current server.
+         */
+        void event(MinecraftServer server);
+    }
+
+    /**
+     * The functional interface for representing listeners of the {@link #STARTING} event.
+     *
+     * @author ebo2022
+     */
+    @FunctionalInterface
+    interface Starting {
+        /**
+         * Called while the server is starting.
+         *
+         * @param server The current server.
+         */
+        void event(MinecraftServer server);
+    }
+
+    /**
+     * The functional interface for representing listeners of the {@link #STARTED} event.
+     *
+     * @author ebo2022
+     */
+    @FunctionalInterface
+    interface Started {
+        /**
+         * Called once the server has fully started.
+         *
+         * @param server The current server.
+         */
+        void event(MinecraftServer server);
+    }
+
+    /**
+     * The functional interface for representing listeners of the {@link #STOPPING} event.
+     *
+     * @author ebo2022
+     */
+    @FunctionalInterface
+    interface Stopping {
+        /**
+         * Called when the server is going to stop.
+         *
+         * @param server The current server.
+         */
+        void event(MinecraftServer server);
+    }
+
+    /**
+     * The functional interface for representing listeners of the {@link #STOPPED} event.
+     *
+     * @author ebo2022
+     */
+    @FunctionalInterface
+    interface Stopped {
+        /**
+         * Called once the server has stopped.
          *
          * @param server The current server.
          */
