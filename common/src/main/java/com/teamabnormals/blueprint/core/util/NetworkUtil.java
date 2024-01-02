@@ -2,7 +2,11 @@ package com.teamabnormals.blueprint.core.util;
 
 import com.teamabnormals.blueprint.common.network.particle.MessageS2CSpawnParticle;
 import com.teamabnormals.blueprint.core.Blueprint;
+import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -15,6 +19,18 @@ import net.minecraft.world.level.Level;
  * @author ebo2022
  */
 public final class NetworkUtil {
+
+	/**
+	 * Creates a custom packet for spawning an entity on each platform.
+	 *
+	 * @param entity The entity to make a packet for.
+	 * @return A custom packet for spawning the entity on each platform.
+	 */
+	@ExpectPlatform
+	public static Packet<ClientGamePacketListener> getEntitySpawningPacket(Entity entity) {
+		throw new AssertionError();
+	}
+
 	/**
 	 * All other parameters work the same in {@link Level#addParticle(ParticleOptions, double, double, double, double, double, double)}.
 	 * <p>Used for adding particles to client levels from the server side.</p>

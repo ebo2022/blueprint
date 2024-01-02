@@ -57,11 +57,6 @@ public final class TagUtil {
 		return TagKey.create(Registries.BIOME, new ResourceLocation(modid, name));
 	}
 
-	// TODO: fix to work with vanilla + dynamic registries
-	//public static boolean isTagged(Biome biome, TagKey<Biome> tagKey) {
-		//return ForgeRegistries.BIOMES.tags().getTag(tagKey).contains(biome);
-	//}
-
 	public static TagKey<Level> dimensionTag(String modid, String name) {
 		return TagKey.create(Registries.DIMENSION, new ResourceLocation(modid, name));
 	}

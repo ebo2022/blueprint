@@ -1,4 +1,4 @@
-package com.teamabnormals.blueprint.fabric;
+package com.teamabnormals.blueprint.core.fabric;
 
 import com.teamabnormals.blueprint.core.events.lifecycle.ModLifecycleEvents;
 import com.teamabnormals.blueprint.core.util.IParallelDispatcher;
@@ -12,5 +12,6 @@ public class BlueprintFabricClient implements ClientModInitializer {
         ModLifecycleEvents.COMMON_SETUP.getInvoker().event(IParallelDispatcher.EMPTY);
         ModLifecycleEvents.CLIENT_SETUP.getInvoker().event(IParallelDispatcher.EMPTY);
         ModLifecycleEvents.LOAD_COMPLETE.getInvoker().event(IParallelDispatcher.EMPTY);
+        BlueprintFabric.onPostInitialize();
     }
 }

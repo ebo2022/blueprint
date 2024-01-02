@@ -7,5 +7,5 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 
 public final class BlueprintBiomes {
-	public static final ResourceKey<Biome> ORIGINAL_SOURCE_MARKER = ResourceKey.create(Registries.BIOME, new ResourceLocation(Blueprint.MOD_ID, "original_source_marker"));
+	public static final ResourceKey<Biome> ORIGINAL_SOURCE_MARKER = Blueprint.REGISTRY_HELPER.createKey(Registries.BIOME, "original_source_marker");
 }

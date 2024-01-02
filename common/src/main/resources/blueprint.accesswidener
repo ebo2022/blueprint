@@ -25,3 +25,7 @@ mutable field net/minecraft/world/entity/animal/Ocelot TEMPT_INGREDIENT Lnet/min
 accessible field net/minecraft/world/entity/animal/Cat TEMPT_INGREDIENT Lnet/minecraft/world/item/crafting/Ingredient;
 mutable field net/minecraft/world/entity/animal/Cat TEMPT_INGREDIENT Lnet/minecraft/world/item/crafting/Ingredient;
 accessible field net/minecraft/client/Minecraft pausePartialTick F
+accessible field net/minecraft/world/entity/vehicle/Boat lastYd D
+accessible field net/minecraft/world/entity/vehicle/Boat status Lnet/minecraft/world/entity/vehicle/Boat$Status;
+accessible field net/minecraft/world/entity/item/FallingBlockEntity blockState Lnet/minecraft/world/level/block/state/BlockState;
+accessible field net/minecraft/world/entity/item/FallingBlockEntity cancelDrop Z

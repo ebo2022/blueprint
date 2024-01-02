@@ -61,7 +61,7 @@ public interface PacketContext {
 	/**
 	 * Disconnects the current client-server connection, and provides information on the disconnection to the client if on a server.
 	 *
-	 * @param message The reason for disconnection
+	 * @param message The reason for disconnection.
 	 */
 	default void disconnect(Component message) {
 		if (this.getDirection().isServerbound()) {

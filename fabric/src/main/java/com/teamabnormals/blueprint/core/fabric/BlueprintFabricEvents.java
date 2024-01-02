@@ -1,4 +1,4 @@
-package com.teamabnormals.blueprint.fabric;
+package com.teamabnormals.blueprint.core.fabric;
 
 import com.teamabnormals.blueprint.core.events.lifecycle.ServerLifecycleEvents;
 

@@ -39,8 +39,18 @@ public interface ModLifecycleEvents {
      */
     SimpleEvent<ParallelDispatchEvent> LOAD_COMPLETE = EventUtil.createVoid(ParallelDispatchEvent.class);
 
+    /**
+     * The functional interface for representing listeners of the mod lifecycle events.
+     *
+     * @author ebo2022
+     */
     @FunctionalInterface
     interface ParallelDispatchEvent {
+        /**
+         * Called during the mod setup lifecycle.
+         *
+         * @param dispatcher An {@link IParallelDispatcher} to help with deferring non-threadsafe work.
+         */
         void event(IParallelDispatcher dispatcher);
     }
 }

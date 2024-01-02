@@ -36,8 +36,18 @@ public interface ServerLifecycleEvents {
      */
     SimpleEvent<ServerEvent> STOPPED = EventUtil.createVoid(ServerEvent.class);
 
+    /**
+     * The functional interface for representing listeners of server-related events.
+     *
+     * @author ebo2022
+     */
     @FunctionalInterface
     interface ServerEvent {
+        /**
+         * Called when the event listener is fired during the server lifecycle.
+         *
+         * @param server The current server.
+         */
         void event(MinecraftServer server);
     }
 }

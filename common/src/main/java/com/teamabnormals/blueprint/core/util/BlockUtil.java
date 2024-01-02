@@ -8,12 +8,14 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -177,6 +179,21 @@ public final class BlockUtil {
 	 */
 	public static <T extends Entity> List<T> getEntitiesAtOffsetPos(BlockSource source, Class<T> entityType, Predicate<? super T> predicate) {
 		return source.level().getEntitiesOfClass(entityType, new AABB(offsetPos(source)), predicate);
+	}
+
+	/**
+	 * Checks if a block can be "hydrated" based on the surrounding fluid. This is a compatibility method for Forge block states.
+	 *
+	 * @param state    The {@link BlockState} to check.
+	 * @param getter   The level the block is in.
+	 * @param pos      The {@link BlockPos} the block is at.
+	 * @param fluid    The fluid that could hydrate the block.
+	 * @param fluidPos The {@link BlockPos} the fluid is at.
+	 * @return Whether the block can be hydrated.
+	 */
+	@ExpectPlatform
+	public static boolean canBeHydrated(BlockState state, BlockGetter getter, BlockPos pos, FluidState fluid, BlockPos fluidPos) {
+		throw new AssertionError();
 	}
 
 	/**

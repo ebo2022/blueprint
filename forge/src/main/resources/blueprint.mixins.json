@@ -6,6 +6,7 @@
   "client": [
   ],
   "mixins": [
+    "FuelItemMixin",
     "GiveGiftToHeroAccessor",
     "PotionBrewingAccessor"
   ],

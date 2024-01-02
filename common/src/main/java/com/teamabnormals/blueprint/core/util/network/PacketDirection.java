@@ -21,8 +21,7 @@ public interface PacketDirection<T extends PacketDirection<T>> {
      * Represents the direction a regular game packet is going in.
      */
     enum Play implements PacketDirection<Play> {
-        SERVERBOUND,
-        CLIENTBOUND;
+        SERVERBOUND, CLIENTBOUND;
 
         @Override
         public boolean isServerbound() {
@@ -39,8 +38,7 @@ public interface PacketDirection<T extends PacketDirection<T>> {
      * Represents the direction that a login packet or response to a login packet is going in.
      */
     enum Login implements PacketDirection<Login> {
-        SERVERBOUND,
-        CLIENTBOUND;
+        SERVERBOUND, CLIENTBOUND;
 
         @Override
         public boolean isServerbound() {

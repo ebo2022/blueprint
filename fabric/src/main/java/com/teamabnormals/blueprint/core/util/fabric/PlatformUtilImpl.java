@@ -1,6 +1,7 @@
 package com.teamabnormals.blueprint.core.util.fabric;
 
-import com.teamabnormals.blueprint.fabric.BlueprintFabric;
+import com.teamabnormals.blueprint.core.fabric.BlueprintFabric;
+import com.teamabnormals.blueprint.core.util.PlatformUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
@@ -21,5 +22,12 @@ public class PlatformUtilImpl {
 
     public static BlockableEventLoop<?> getGameExecutor() {
         return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT ? CLIENT_GAME_EXECUTOR.get().get() : getCurrentServer().orElseThrow(() -> new IllegalStateException("Expected running server, none present"));
+    }
+
+    public static PlatformUtil.Side getSide() {
+        return switch (FabricLoader.getInstance().getEnvironmentType()) {
+            case CLIENT -> PlatformUtil.Side.CLIENT;
+            case SERVER -> PlatformUtil.Side.SERVER;
+        };
     }
 }

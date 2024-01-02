@@ -64,7 +64,6 @@ public final class DataUtil {
 	private static final Vector<CustomNoteBlockInstrument> CUSTOM_NOTE_BLOCK_INSTRUMENTS = new Vector<>();
 	private static final ArrayList<Pair<ResourceLocation, Pair<Function<RegistryAccess, StructurePoolElement>, Integer>>> TEMPLATE_POOL_ADDITIONS = new ArrayList<>();
 
-	// TODO: add this back
 	public static void onServerAboutToStart(MinecraftServer minecraftServer) {
 		var registryAccess = minecraftServer.registryAccess();
 		var structureTemplatePoolRegistry = registryAccess.registryOrThrow(Registries.TEMPLATE_POOL);

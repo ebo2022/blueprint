@@ -21,13 +21,13 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.teamabnormals.blueprint.fabric.BlueprintFabric"
+      "com.teamabnormals.blueprint.core.fabric.BlueprintFabric"
     ],
     "client": [
-      "com.teamabnormals.blueprint.fabric.BlueprintFabricClient"
+      "com.teamabnormals.blueprint.core.fabric.BlueprintFabricClient"
     ],
     "server": [
-      "com.teamabnormals.blueprint.fabric.BlueprintFabric"
+      "com.teamabnormals.blueprint.core.fabric.BlueprintFabric"
     ]
   },
   "mixins": [
