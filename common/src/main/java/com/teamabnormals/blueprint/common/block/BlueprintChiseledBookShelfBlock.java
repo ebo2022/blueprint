@@ -1,5 +1,6 @@
 package com.teamabnormals.blueprint.common.block;
 
+import com.teamabnormals.blueprint.common.block.entity.BlueprintChiseledBookShelfBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;

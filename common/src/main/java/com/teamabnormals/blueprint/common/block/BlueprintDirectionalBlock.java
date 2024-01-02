@@ -18,6 +18,12 @@ public class BlueprintDirectionalBlock extends DirectionalBlock {
 	}
 
 	@Override
+	protected MapCodec<? extends DirectionalBlock> codec() {
+		// TODO: add when the datapackening of blocks actually happens, it's useless for now
+		return null;
+	}
+
+	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		builder.add(FACING);
 	}

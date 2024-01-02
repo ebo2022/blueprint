@@ -28,6 +28,7 @@ public class BlueprintFabricClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        BlueprintFabricEvents.registerClient();
         EntityRendererEvents.REGISTER_RENDERERS.getInvoker().event(new EntityRendererContextImpl());
         EntityRendererEvents.REGISTER_LAYER_DEFINITIONS.getInvoker().event(new LayerDefinitionContextImpl());
         BlueprintFabric.forType(BuiltInRegistries.ITEM, BEWLRBlockItem.class, item -> {
