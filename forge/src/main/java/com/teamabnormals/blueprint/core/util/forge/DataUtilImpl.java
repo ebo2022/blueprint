@@ -1,7 +1,10 @@
 package com.teamabnormals.blueprint.core.util.forge;
 
+import com.mojang.serialization.Codec;
+import com.teamabnormals.blueprint.core.api.condition.*;
 import com.teamabnormals.blueprint.core.mixin.forge.GiveGiftToHeroAccessor;
 import com.teamabnormals.blueprint.core.mixin.forge.PotionBrewingAccessor;
+import com.teamabnormals.blueprint.core.api.condition.forge.CustomConditionWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
@@ -11,7 +14,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -20,12 +22,11 @@ import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraft.world.level.block.FireBlock;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.fml.util.ObfuscationReflectionHelper;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import org.jetbrains.annotations.ApiStatus;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 
 @ApiStatus.Internal
@@ -77,5 +78,9 @@ public class DataUtilImpl {
 
     public static Ingredient compoundIngredient(Ingredient... ingredients) {
         return CompoundIngredient.of(ingredients);
+    }
+
+    public static <T extends IBlueprintResourceCondition> void registerResourceCondition(ResourceLocation name, Codec<T> codec) {
+        ForgeUtil.<RegisterEvent>addModBusListener(name.getNamespace(), evt -> evt.register(NeoForgeRegistries.Keys.CONDITION_CODECS, helper -> helper.register(name, codec.xmap(CustomConditionWrapper::new, CustomConditionWrapper::condition))));
     }
 }

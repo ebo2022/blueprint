@@ -1,5 +1,9 @@
 package com.teamabnormals.blueprint.core.util.fabric;
 
+import com.mojang.logging.LogUtils;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import com.teamabnormals.blueprint.core.api.condition.IBlueprintResourceCondition;
 import com.teamabnormals.blueprint.core.mixin.fabric.IngredientAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -8,6 +12,7 @@ import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistry;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.fabricmc.fabric.api.registry.VillagerInteractionRegistries;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.Holder;
@@ -20,14 +25,15 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.ApiStatus;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 @ApiStatus.Internal
 public class DataUtilImpl {
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     public static void registerFlammable(Block block, int encouragement, int flammability) {
         FlammableBlockRegistry.getDefaultInstance().add(block, encouragement, flammability);
@@ -70,5 +76,9 @@ public class DataUtilImpl {
             }
             return IngredientAccessor.blueprint$fromValues(values.stream());
         }
+    }
+
+    public static <T extends IBlueprintResourceCondition> void registerResourceCondition(ResourceLocation name, Codec<T> codec) {
+        ResourceConditions.register(name, json -> codec.parse(JsonOps.INSTANCE, json).getOrThrow(false, LOGGER::error).test());
     }
 }

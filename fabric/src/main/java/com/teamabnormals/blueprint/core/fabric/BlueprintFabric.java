@@ -6,6 +6,7 @@ import com.teamabnormals.blueprint.common.item.FuelBlockItem;
 import com.teamabnormals.blueprint.common.item.FuelItem;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.events.lifecycle.ModLifecycleEvents;
+import com.teamabnormals.blueprint.core.registry.fabric.BlueprintFabricResourceConditions;
 import com.teamabnormals.blueprint.core.util.IParallelDispatcher;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.api.ModInitializer;
@@ -26,13 +27,13 @@ import java.util.stream.Stream;
  * @author ebo2022
  */
 public class BlueprintFabric implements ModInitializer, DedicatedServerModInitializer {
-
     static MinecraftServer server;
 
     @Override
     public void onInitialize() {
         Blueprint.init();
         BlueprintFabricEvents.register();
+        BlueprintFabricResourceConditions.register();
     }
 
     // Note: This works because ClientModInitializer & DedicatedServerModInitializer are run after regular ModInitializers

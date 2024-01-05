@@ -3,7 +3,9 @@ package com.teamabnormals.blueprint.core.util;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
+import com.teamabnormals.blueprint.core.api.condition.IBlueprintResourceCondition;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHolder;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.fabricmc.api.EnvType;
@@ -325,6 +327,17 @@ public final class DataUtil {
 	 */
 	public static synchronized void addToJigsawPattern(ResourceLocation toAdd, Function<RegistryAccess, StructurePoolElement> newPieceFactory, int weight) {
 		TEMPLATE_POOL_ADDITIONS.add(Pair.of(toAdd, Pair.of(newPieceFactory, weight)));
+	}
+
+	/**
+	 * Registers a custom {@link IBlueprintResourceCondition}.
+	 *
+	 * @param name  The name to register the condition under.
+	 * @param codec The {@link Codec} to encode and decode instances of the condition.
+	 */
+	@ExpectPlatform
+	public static <T extends IBlueprintResourceCondition> void registerResourceCondition(ResourceLocation name, Codec<T> codec) {
+		throw new AssertionError();
 	}
 
 	/**
